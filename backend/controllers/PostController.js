@@ -117,7 +117,7 @@ export const getLastTags = async(req, res) => {
 
         const tags = posts.map((obj) => obj.tags)
         .flat()
-        .slice(0, 5)
+        .slice(0, 6)
         
         const uniqueTags = tags.filter((item, index) => {
             return tags.indexOf(item) === index

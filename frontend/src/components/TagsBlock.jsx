@@ -19,7 +19,7 @@ export const TagsBlock = ({ items, isLoading = true }) => {
             style={{ textDecoration: "none", color: "black" }}
             href={`/tags/${name}`}
           >
-            <ListItem key={i} disablePadding>
+            <ListItem key={`${i}` + Date.now()} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <TagIcon />
