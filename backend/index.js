@@ -12,12 +12,12 @@ import { UserController, PostController } from './controllers/index.js';
 
 mongoose
     .connect("mongodb+srv://RedCrown:125236347Rus@mern-app.thsk0ov.mongodb.net/blog?retryWrites=true&w=majority",)
-    .then(() => console.log('DB ok'))
+    .then(() => console.log('DB OK'))
     .catch((err) => console.log("DB error", err))
 
 const app = express();
 
-const storage = multer.diskStorage({
+const storageImage = multer.diskStorage({
     destination: (_, __, cb) => {
         cb(null, 'uploads')
     },
@@ -26,11 +26,23 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage });
+const storageAvatar = multer.diskStorage({
+    destination: (_, __, cb) => {
+        cb(null, 'avatars')
+    },
+    filename: (_, file, cb) => {
+        cb(null, file.originalname);
+    },
+});
+
+
+const upload = multer({ storage: storageImage });
+const avatar = multer({ storage: storageAvatar });
 
 app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
+app.use('/avatars', express.static('avatars'));
 
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
@@ -42,9 +54,15 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     })
 })
 
-app.get('/', (req, res) => {
-    res.send("Working")
-});
+app.post('/avatar', avatar.single('image'), (req, res) => {
+    res.json({
+        url: `/avatars/${req.file.originalname}`,
+    })
+})
+
+// app.get('/', (res) => {
+//     res.send("Working")
+// });
 
 app.get('/tags', PostController.getLastTags);
 
